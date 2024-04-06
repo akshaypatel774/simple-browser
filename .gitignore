@@ -1,0 +1,15 @@
+# Ignore compiled Python files
+__pycache__
+
+# Ignore defaults directory
+defaults/
+
+# Ignore specific Python files
+temp.py
+win.py
+
+# Ignore environment files
+.env
+
+# Ignore virtual environment directory
+venv/

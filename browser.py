@@ -138,7 +138,8 @@ class URL:
 
         return content
 
-def remove_tags(body):
+def remove_tags(body):  # change name to lex
+    text = ""
     in_tag = False
     for c in body:
         if c == "<":
@@ -146,7 +147,8 @@ def remove_tags(body):
         elif c == ">":
             in_tag = False
         elif not in_tag:
-            print(c, end="")
+            text += c
+    return text
 
 def load(url: URL):
     now = datetime.now()
