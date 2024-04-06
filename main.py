@@ -1,6 +1,7 @@
 import socket
 import ssl
 from datetime import datetime, timedelta
+import gzip
 
 cache = {}
 
@@ -49,16 +50,17 @@ class URL:
                 # request += "Connection: keep-alive\r\n"
                 request += "Connection: close\r\n"
                 request += "User-Agent: SuperFastBrowser/2.5\r\n"
+                request += "Accept-Encoding: gzip\r\n"
                 request += "\r\n"
                 s.send(request.encode("utf8"))
 
-                response = s.makefile("r", encoding="utf8", newline="\r\n")
-                statusline = response.readline()
+                response = s.makefile("rb", encoding="utf8", newline="\r\n")
+                statusline = response.readline().decode("utf8")
                 version, status, explanation = statusline.split(" ", 2)
                 
                 response_headers = {}
                 while True:
-                    line = response.readline()
+                    line = response.readline().decode("utf8")
                     if line == "\r\n": break
                     header, value = line.split(":", 1)
                     response_headers[header.casefold()] = value.strip()
@@ -114,10 +116,26 @@ class URL:
                         break
                     content += data
         else:
-            content = response.read()
-
-        if content == "":
+            # Chunked transfer encoding
+            content = b""
+            while True:
+                chunk_size_str = response.readline().decode("utf8").rstrip("\r\n")
+                if chunk_size_str == "":
+                    break
+                chunk_size = int(chunk_size_str, 16)
+                if chunk_size == 0:
+                    break
+                chunk = response.read(chunk_size)
+                content += chunk
+                response.read(2)
+        
+        if content == b"":
             return "{} is empty".format(self.scheme)
+
+        if "content-encoding" in response_headers and response_headers["content-encoding"] == "gzip":
+            content = gzip.decompress(content)
+            content = content.decode("utf8")
+
         return content
 
 def remove_tags(body):
