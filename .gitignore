@@ -4,9 +4,10 @@ __pycache__
 # Ignore defaults directory
 defaults/
 
-# Ignore specific Python files
+# Ignore specific files
 temp.py
 win.py
+extras.md
 
 # Ignore environment files
 .env

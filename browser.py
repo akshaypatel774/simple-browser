@@ -138,7 +138,7 @@ class URL:
 
         return content
 
-def remove_tags(body):  # change name to lex
+def remove_tags(body):
     text = ""
     in_tag = False
     for c in body:
