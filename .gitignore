@@ -6,6 +6,8 @@ defaults/
 
 # Ignore specific files
 temp.py
+temp_main.py
+browser_main.py
 win.py
 extras.md
 

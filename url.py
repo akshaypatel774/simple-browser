@@ -16,12 +16,13 @@ class URL:
         else:
             self.path = "/" + url.split("/", 1)[-1]
             self.host = url.split("/", 1)[0]
-            self.port = 80 if self.scheme == "http" else 443
             self.socket = None
-            
             if ":" in self.host:
                 self.host, port = self.host.split(":", 1)
                 self.port = int(port)
+            else:
+                self.port = 80 if self.scheme == "http" else 443
+                    
 
     def get_socket(self):
         """Get or create a socket for the URL."""
